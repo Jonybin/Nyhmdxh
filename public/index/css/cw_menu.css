@@ -1,0 +1,50 @@
+.cw_leibie_div1{
+    width: 100%;
+    height: 70px;
+    background-color: #fff;
+    border: 0px solid #cecece;
+    font-size: 16px;
+    color:#404040 ;
+}
+.ye_guan_two_left_img_xin1{
+    width: 16px;
+    height: 16px;
+    background: url("../images/caiwu_03.png") no-repeat;
+    background-size: contain;
+    float: left;
+    margin-top: 17px;
+    margin-left: 8px;
+}
+.ye_guan_two_left_img_xin5{
+    width: 16px;
+    height: 16px;
+    background: url("../images/rizhi_03.png") no-repeat;
+    background-size: contain;
+    float: left;
+    margin-top: 17px;
+    margin-left: 8px;
+}
+.cw_leibie_div2{
+    background-color: #fff;
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid #cecece;
+}
+.ye_guan_add_img_xin1{
+    width: 20px;
+    height: 20px;
+    background: url("../images/tian_03.png") no-repeat;
+    background-size: contain;
+    float: left;
+    margin-top: 7.5px;
+    margin-left: 6px;
+}
+.ye_guan_del_img_xin1{
+    width: 20px;
+    height: 20px;
+    background: url("../images/shan_03.png") no-repeat;
+    background-size: contain;
+    float: left;
+    margin-top: 7.5px;
+    margin-left: 6px;
+}

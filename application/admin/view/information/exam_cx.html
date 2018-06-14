@@ -1,0 +1,46 @@
+{include file="/layout/header"}
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+<h1>
+
+    <span class="action-span1">查询审核列表</span>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th >单位/个人姓名</th>
+            <th >查询人姓名</th>
+            <th >查询时间</th>
+            <th >查询人联系电话</th>
+            <th >查询事由</th>
+            <th >审核状态</th>
+            <th width="150">操作</th>
+        </tr>
+        <?php foreach($info as $k => $v): ?>
+        <tr class="tron">
+            <td align="center"><?php if($v['danwei_geren']==0): echo $v['company_name'];else: echo $v['username'];endif;?></td>
+            <td align="center"><?php echo $v['cx_username'] ?></td>
+            <td align="center"><?php echo date("Y-m-d",$v['chaxun_time']) ?></td>
+            <td align="center"><?php echo $v['phone'] ?></td>
+            <td align="center"><?php echo $v['chaxun_shiyou'] ?></td>
+            <td align="center"><?php echo $v['status_chaxun']==0?'待审核':($v['status_chaxun']==1?'审核通过':'审核失败') ?></td>
+            <td align="center">
+                <a href="/index.php/admin/Information/do_exam_cx/id/<?php echo $v['id']; ?>">审核</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+
+    </table>
+</div>
+{include file="/layout/footer"}
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

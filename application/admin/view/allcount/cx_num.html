@@ -1,0 +1,95 @@
+{include file="/layout/header"}
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+<h1>
+    
+    <span class="action-span1">(横向)查询统计</span>
+    <div class="form-div search_form_div">
+    <form method="post" action="" name="search_form" onsubmit="return checkForm(this)">
+        <input name="time" value="<?php if(!empty($sta_t))echo $sta_t;?>" id="time" style="margin-left:40%;" placeholder="开始时间" type="text" size="20" onclick="return Calendar('time');" />
+        <input type="text" name="time2" value="<?php if(!empty($end_t))echo $end_t;?>" id="time2" placeholder="结束时间" onclick="return Calendar('time2');"/>
+        <select id="nature" name="danwei">
+                                <option value="">请选择单位</option>
+            {volist name='data' id="val"}
+                                <option value="{$val['b_name']}">{$val['b_name']}</option>
+                                {/volist}
+        </select>
+        <input type="submit" value=" 检索 " class="button" style="margin-left: 15px"/>
+        <span class="action-span"><a href="/index.php/admin/allcount/export_xji_num">导出Excel表</a></span>
+    </form>
+</div>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+
+        <tr>
+            <th >查询单位</th>
+            <th >查询次数</th>
+            <th >查询结果次数</th>
+            <th >处置次数</th>
+            <th >时间段</th>
+            <th >操作</th>
+        </tr>
+        {volist name="info" id="v"}
+            <tr>
+                <td align="center">
+                    {$v['username']}
+                </td>
+
+                <td align="center">
+                        {$v['find_num']}
+                </td>
+                <td align="center">
+                         {$v['find_re_num']}
+
+                </td>
+                <td align="center">
+                        {$v['chuzhi_num'];}
+                </td>
+                <td align="center">
+                        {$v['sta_time']}-{$v['end_time']}
+                </td>
+                <td align="center">
+                       <a href="/index.php/admin/allcount/cx_num_chuzhi/id/{$v['chuzhi_ids']}">
+                        查看详情
+                    </a>
+                </td>
+            </tr>
+        {/volist}
+
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+
+    </table>
+</div>
+{include file="/layout/footer"}
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+
+    function checkForm(form){
+        var t1 = $('#time').val();
+        var t2 = $('#time2').val();
+        var my_d = new Date();
+       var d1 = new Date(t1.replace(/\-/g, "\/"));
+       var d2 = new Date(t2.replace(/\-/g, "\/"));
+       if(t1!==''&&t2!==''){
+            if(d1>my_d || d2>my_d){
+                alert('无法超前查询');
+                return false;
+            }
+            if(d1>d2){
+                alert('开始时间不能大于结束时间');
+                return false;
+            }
+       }else{
+        alert('请选择查询时间段');
+        return false;
+       }
+    }
+</script>

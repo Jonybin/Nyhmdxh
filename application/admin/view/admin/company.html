@@ -1,0 +1,36 @@
+{include file="/layout/header"}
+<h1>
+	<span class="action-span"><a href="/index.php/admin/admin/b_add">添加公司性质</a></span>
+	<span class="action-span1"><a href="#">公司性质列表</a></span>
+	<div style="clear:both"></div>
+</h1>
+<!-- 搜索 -->
+<!-- <div class="form-div search_form_div">
+    <form method="GET" name="search_form">
+		<p>
+			角色名称：
+	   		<input type="text" name="role_name" size="30" value="" />
+		</p>
+		<p><input type="submit" value=" 搜索 " class="button" /></p>
+    </form>
+</div> -->
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+	<table cellpadding="3" cellspacing="1">
+    	<tr>
+            <th width="100">角色名称</th>
+            <th >权限名称</th>
+			<th width="100">操作</th>
+        </tr>
+		<tr><td align="right" nowrap="true" colspan="3" height="30"></td></tr>
+	</table>
+</div>
+{include file="/layout/footer"}
+<script>
+	$("tr.tron").mouseover(function(){
+		$(this).find("td").css("backgroundColor", "#DDEEF2");
+	});
+	$("tr.tron").mouseout(function(){
+		$(this).find("td").css("backgroundColor", "#FFF");
+	});
+</script>

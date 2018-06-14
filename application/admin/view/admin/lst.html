@@ -1,0 +1,91 @@
+{include file="/layout/header"}
+<h1>
+	<span class="action-span1"><a href="#">管理员密码修改</a></span>
+<div class="form-div search_form_div">
+    <form method="get" action="" name="search_form">
+        <input id="company_name" style="margin-left:60%;" placeholder="请输入查询条件" type="text" name="keyword" size="20" value="<?php if(!empty($keyword))echo $keyword;?>" onclick="a('我是宋相南')" />
+        <input type="submit" value=" 检索 " class="button" style="margin-left: 15px"/>
+        <?php if($adminId==1): ?><span class="action-span"><a href="/index.php/admin/Admin/add">添加管理员</a></span><?php endif; ?>
+    </form>
+</div>
+	<div style="clear:both"></div>
+</h1>
+
+
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+	<table cellpadding="3" cellspacing="1">
+    	<tr>
+            <th >单位名称</th>
+			<th width="300">操作</th>
+        </tr>
+		<?php foreach ($data as $k => $v):  ?>
+		<tr class="tron">
+				<td align="center"><?php echo $v['username']; ?></td>
+		        <td align="center">
+					<a href="/index.php/admin/Admin/edit/id/<?php echo $v['id']; ?>" title="编辑">修改</a>
+					<?php if($adminId==1): ?>
+					<?php if($v['id'] > 1): ?>|
+	                <a href="/index.php/admin/Admin/delete/id/<?php echo $v['id']; ?>" onclick="return confirm('确定要删除吗？');" title="移除">移除</a>
+					<?php endif; ?>
+					<?php endif; ?>
+		        </td>
+		</tr>
+		<?php endforeach; ?>
+		<tr>
+            <td align="center" nowrap="true" colspan="12" height="30">{$page}</td>
+        </tr>
+        <tr><td align="right" nowrap="true" colspan="3" height="30"></td></tr>
+
+	</table>
+</div>
+<script>
+	$("tr.tron").mouseover(function(){
+		$(this).find("td").css("backgroundColor", "#DDEEF2");
+	});
+	$("tr.tron").mouseout(function(){
+		$(this).find("td").css("backgroundColor", "#FFF");
+	});
+
+	// 为启用的td加一个事件
+	$(".is_use").click(function(){
+		// 先获取点击的记录的ID
+		var id = $(this).attr("admin_id");
+		if(id == 1)
+		{
+			alert("超级管理员不能修改是否启用！");
+			return false;
+		}
+		var _this = $(this);
+
+		$.ajax({
+			url: "/index.php/admin/admin/get_isuse",
+			type: "post",
+			dataType: "json",
+			data: "admin_id="+id,
+			async: false,
+			success: function (obj) {
+				if(obj.code == 0){
+					_this.html("禁用");
+				}else{
+					_this.html("启用");
+				}
+			}
+		});
+	});
+</script>
+{include file="/layout/footer"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

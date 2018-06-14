@@ -1,0 +1,42 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span"><a href="/index.php/admin/Notice/add_gg">添加通知公告</a></span>
+    <span class="action-span1"><a href="#">通知公告列表</a></span>
+    <div style="clear:both"></div>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th >公告标题</th>
+            <th >公告内容</th>
+            <th >添加时间</th>
+            <th >状态</th>
+            <th width="80">操作</th>
+        </tr>
+        <?php foreach($info as $k =>$v): ?>
+        <tr class="tron">
+            <td align="center"><?php echo $v['gg_title'] ?></td>
+            <td align="center"><?php echo $v['gg_content'] ?></td>
+            <td align="center"><?php echo date('Y-m-d',$v['gg_time']); ?></td>
+            <td align="center"><?php if($v['gg_status']==0):echo '显示';else:echo '隐藏';endif;?></td>
+            <td align="center">
+                <a href="/index.php/admin/notice/edit_gg/gg_id/<?php echo $v['gg_id']; ?>" title="编辑">编辑</a> |
+                <a href="/index.php/admin/notice/del_gg/gg_id/<?php echo $v['gg_id']; ?>" onclick="return confirm('确定要删除吗？');" title="移除">移除</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+    </table>
+</div>
+{include file="/layout/footer"}
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

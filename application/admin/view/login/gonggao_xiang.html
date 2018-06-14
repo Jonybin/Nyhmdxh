@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta name="viewport"
+          content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+    <link href="/admin/style_new/gonggao_xiang.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="main">
+    <div class="main">
+        <div class="title_div"><?php echo $info['gg_title'] ?></div>
+        <div class="time_div">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;发布时间：<?php echo date('Y-m-d',$info['gg_time']) ?></div>
+        <div style="height: 1rem;width: 100%"></div>
+        <div class="content_div">
+            &nbsp;&nbsp;&nbsp;&nbsp;<?php echo $info['gg_content']; ?>
+        </div>
+    </div>
+</div>
+</body>
+</html>

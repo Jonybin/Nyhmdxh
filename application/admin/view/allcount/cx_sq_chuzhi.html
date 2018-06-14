@@ -1,0 +1,40 @@
+{include file="/layout/header"}
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+<h1>
+    <!-- <span class="action-span"><a href="/index.php/admin/allcount/export_cx">导出Excel表</a></span> -->
+    <span class="action-span1">查询统计</span>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+
+        <tr>
+            <th >申请处置人</th>
+            <th >申请处置结果</th>
+            <th >申请处置时间</th>
+            <th >详细信息</th>
+        </tr>
+        <?php foreach($info as $k =>$v): ?>
+        <tr class="tron">
+            <td align="center"><?php echo $v['sq_name']; ?></td>
+            <td align="center"><?php echo $v['cz_res']; ?></td>
+            <td align="center"><?php echo date('Y-m-h H:i:s',$v['cz_time']); ?></td>
+            <td align="center"><a href="/index.php/admin/allcount/cx_count_xiang/id/<?php echo $v['inf_id']; ?>">查看详情</a></td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+
+    </table>
+</div>
+{include file="/layout/footer"}
+
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

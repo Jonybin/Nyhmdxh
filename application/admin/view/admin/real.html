@@ -1,0 +1,25 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span1"><a href="#">管理员实名</a></span>
+    <div style="clear:both"></div>
+</h1>
+<div class="main-div">
+    <form name="main_form" method="POST" action="" enctype="multipart/form-data">
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <input name="admin_id" type="hidden" value="<?php echo $adminId; ?>" />
+            <tr>
+                <td class="label">管理员姓名：</td>
+                <td>
+                    <input  type="text" id="realname" name="realname" value="<?php echo $rn['realname'] ?>" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="99" align="center">
+                    <input type="submit" class="button" value=" 确定 "  onclick="return check(this.form)"/>
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+{include file="/layout/footer"}

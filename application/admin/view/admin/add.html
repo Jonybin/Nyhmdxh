@@ -1,0 +1,107 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span"><a href="/index.php/admin/Admin/lst">管理员列表</a></span>
+    <span class="action-span1"><a href="#">添加管理员</a></span>
+    <div style="clear:both"></div>
+</h1>
+<div class="main-div">
+    <form name="main_form" method="POST" action="" enctype="multipart/form-data">
+        <table cellspacing="1" cellpadding="3" width="100%">
+        	<tr>
+                <td class="label">拥有权限：</td>
+                <td>
+                    <?php foreach ($roleData as $k => $v): ?>
+                    <input type="checkbox" name="role_id[]" value="{$v.id}" /> {$v.role_name}
+                    <?php endforeach; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="label">所在单位：</td>
+                <td>
+                    <input  type="text" id="Company" name="Company" value="" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">担任角色：</td>
+                <td>
+                    <input type="radio" name="admin_role" value="0"  />超管
+                    <input type="radio" name="admin_role" value="1"  />审核
+                    <input type="radio" name="admin_role" value="2"  />录入
+                    <input type="radio" name="admin_role" value="3"  />查询
+                    <input type="radio" name="admin_role" value="4"  />监管
+                </td>
+            </tr>
+            <tr>
+                <td class="label">账号：</td>
+                <td>
+                    <input  type="text" id="username" name="username" value="" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">密码：</td>
+                <td>
+                    <input type="password" size="25" id="password" name="password" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">确认密码：</td>
+                <td>
+                    <input type="password" size="25" id="cpassword" name="cpassword" />
+                </td>
+            </tr>
+            <tr>
+                <td class="label">是否启用：</td>
+                <td>
+                	<input type="radio" name="is_use" value="1" checked="checked" />启用
+                	<input type="radio" name="is_use" value="0"  />禁用
+                </td>
+            </tr>
+            <tr>
+                <td class="label">Ukey密钥：</td>
+                <td><input size="25" onblur="check_long()" id="ukey" name="ukey" style="width: 300px" />密钥为不超过32个的0-F的字符 例如：1234567890ABCDEF1234567890ABCDEF</td>
+            </tr>
+            <tr>
+                <td colspan="99" align="center">
+                    <input type="submit" class="button" value=" 确定 "  onclick="return check(this.form)"/>
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+        //检查form表单输入框
+    function check(form) {
+        if($("#Company").val()==''|| $("#Company").val()==null) {
+            alert('所在单位不能为空');
+            return false;
+        }
+        if($("#username").val()==''|| $("#username").val()==null) {
+            alert('账号不能为空');
+            return false;
+        }
+        if($("#password").val()==''|| $("#password").val()==null) {
+            alert('密码不能为空');
+            return false;
+        }
+        if($("#cpassword").val()==''|| $("#cpassword").val()==null) {
+            alert('确认密码不能为空');
+            return false;
+        }
+        if($("#password").val()!=$("#cpassword").val()) {
+            alert('两次密码输入不一致');
+            return false;
+        }
+        if($("#ukey").val()==''|| $("#ukey").val()==null) {
+            alert('两次密码输入不一致');
+            return false;
+        }
+    }
+
+    function check_long(){
+        if($("#ukey").val().length>32){
+            alert('Ukey密钥长度不能超过32位');
+        }
+    }
+</script>
+{include file="/layout/footer"}

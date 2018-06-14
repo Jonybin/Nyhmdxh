@@ -1,0 +1,42 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span"><a href="/index.php/admin/Notice/add_tb">添加系统通报</a></span>
+    <span class="action-span1"><a href="#">系统通报列表</a></span>
+    <div style="clear:both"></div>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+        <tr>
+            <th >通报标题</th>
+            <th >通报内容</th>
+            <th >添加时间</th>
+            <th >状态</th>
+            <th width="60">操作</th>
+        </tr>
+        <?php foreach($info as $k =>$v): ?>
+        <tr class="tron">
+            <td><?php echo $v['tb_title'] ?></td>
+            <td><?php echo $v['tb_content'] ?></td>
+            <td><?php echo date('Y-m-d',$v['tb_time']); ?></td>
+            <td><?php if($v['tb_status']==0):echo '显示';else:echo '隐藏';endif;?></td>
+            <td align="center">
+                <a href="/index.php/admin/notice/edit_tb/tb_id/<?php echo $v['tb_id']; ?>" title="编辑">编辑</a> |
+                <a href="/index.php/admin/notice/del_tb/tb_id/<?php echo $v['tb_id']; ?>" onclick="return confirm('确定要删除吗？');" title="移除">移除</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+    </table>
+</div>
+{include file="/layout/footer"}
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

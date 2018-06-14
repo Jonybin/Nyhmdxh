@@ -1,0 +1,33 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span"><a href="/index.php/admin/Admin/b_lst">单位列表</a></span>
+    <span class="action-span1"><a href="#">增加单位/部门</a></span>
+    <div style="clear:both"></div>
+</h1>
+<div class="main-div">
+    <form name="main_form" method="POST" action="" enctype="multipart/form-data" >
+        <table cellspacing="1" cellpadding="3" width="100%">
+           
+            <tr>
+                <td class="label">输入单位：</td>
+                <td>
+                    <input type="text" size="25" name="b_name" id="b_name" />
+                </td>
+                <td colspan="99" align="center">
+                    <input type="submit" class="button" value=" 确定 " onclick="return check(this.form)" />
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<script>
+        //检查form表单输入框
+    function check(form) {
+        if($("#b_name").val()==''|| $("#b_name").val()==null) {
+            alert('输入的单位不能为空');
+            return false;
+        }
+    }
+</script>
+{include file="/layout/footer"}

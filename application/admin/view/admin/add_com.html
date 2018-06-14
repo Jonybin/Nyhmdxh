@@ -1,0 +1,34 @@
+{include file="/layout/header"}
+<h1>
+    <span class="action-span"><a href="/index.php/admin/Admin/b_lst">公司性质列表</a></span>
+    <span class="action-span1"><a href="#">增加公司性质</a></span>
+    <div style="clear:both"></div>
+</h1>
+<div class="main-div">
+    <form name="main_form" method="POST" action="" enctype="multipart/form-data" >
+        <table cellspacing="1" cellpadding="3" width="100%">
+            <tr>
+                <td class="label">密码：</td>
+                <td>
+                    <input type="password" size="25" name="password" />
+                    留空代表不修改密码
+                </td>
+            </tr>
+            <tr>
+                <td class="label">确认密码：</td>
+                <td>
+                    <input type="password" size="25" name="cpassword" />
+                </td>
+            </tr>
+                <input type="hidden" name="is_use" value="1" />
+
+            <tr>
+                <td colspan="99" align="center">
+                    <input type="submit" class="button" value=" 确定 " onclick="return check(this.form)" />
+                    <input type="reset" class="button" value=" 重置 " />
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+{include file="/layout/footer"}

@@ -1,0 +1,397 @@
+<?php
+namespace app\admin\controller;
+
+use think\Cookie;
+use think\Session;
+use think\Request;
+use think\Controller;
+use think\File;
+use think\db;
+use app\admin\model\Info_tongji as info_tjModel;
+use app\admin\model\Admin as AdminModel;
+use app\admin\model\Chuzi_tongji as Chuzi_tongjiModel;
+use app\admin\model\Information as InfoModel;
+use app\admin\model\Chuzi_tongjicount as Chuzi_tongjicountModel;
+use app\admin\controller\Index;
+class Allcount extends Index
+{
+
+    //查询统计
+    public function cx_count(){
+        $info_tjModel = new info_tjModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+        $where = array();
+        if($ad_info['admin_role']==0){  //超管
+            $where = array();
+        }else{
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','3')->find();
+            $cx_id =  $cx_info['id'];
+            $where['admin_id'] = array('eq', $cx_id);
+        }
+        $info =$info_tjModel->get_chaxun_count($where);
+        // 获取分页显示
+        $page = $info->render();
+        // 模板变量赋值
+        $this->assign('info', $info);
+        $this->assign('page', $page);
+
+        //获取当前月
+        $mouth = intval(date('m',time()));
+        $this->assign('mouth',$mouth);
+        return $this->fetch();
+    }
+
+    //导出查询Excel表
+    public function export_cx(){
+        $info_tjModel = new info_tjModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+        $where = array();
+        if($ad_info['admin_role']==0){  //超管
+            $where = array();
+        }else{
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','3')->find();
+            $cx_id =  $cx_info['id'];
+            $where['admin_id'] = array('eq', $cx_id);
+        }
+
+
+        $list =$info_tjModel->get_chaxun_count($where);
+        $mouth = intval(date('m',time()));
+        $mouth_2 = $mouth+1;
+        $info = array();
+        foreach ($list as $k=>$v){
+            $info[$k]['Company'] = $v['Company'];
+            $info[$k]['cx_username'] = $v['cx_username'];
+            $info[$k]['all_num'] = $v['all_num'];
+            $info[$k]['danwei_num'] = $v['danwei_num'];
+            $info[$k]['geren_num'] = $v['geren_num'];
+            $info[$k]['xingwei_num'] = $v['xingwei_num'];
+            $info[$k]['fanzui_num'] = $v['fanzui_num'];
+            $info[$k]['mouth'] = $mouth."月~".$mouth_2."月";
+        }
+        $table_arr = array ('A' => '查询管理员单位', 'B' => '查询管理员姓名', 'C' => '查询数量	', 'D' => '单位数量', 'E' => '个人数量	', 'F' => '行贿行为数量', 'G' => '行贿犯罪数量', 'H' => '时间段');
+        $this->up_out( $info, $table_arr );
+    }
+
+
+    public function cx_count_xiang(){
+        $id = Request::instance()->param('id');
+        $mouth = date("m",time());
+        $Info_tongji = new info_tjModel;
+        $info = $Info_tongji->get_cx_xiang($id,$mouth);
+        // 获取分页显示
+        $page = $info->render();
+        // 模板变量赋值
+        $this->assign('info', $info);
+        $this->assign('page', $page);
+        return $this->fetch();
+    }
+
+    //录入统计
+    public function lr_count(){
+        $info_tjModel = new info_tjModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+        $where = array();
+        if ($ad_info['admin_role'] == 0) {  //超管
+            $where = 0;
+        }else{
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','2')->find();
+			if(!empty($cx_info )){
+				$cx_id =  json_decode($cx_info)->id;
+				$where = $cx_id;
+			}
+        }
+
+        $info = $info_tjModel->get_luru_count($where);
+
+        // dump($info);
+        // 获取分页显示
+		if(!empty($info[0])){
+			$page = $info[0]->render();
+			// 模板变量赋值
+			$this->assign('info', $info[1]);
+		}else{
+			$page = [];
+			// 模板变量赋值
+			$this->assign('info', []);
+		}
+        
+        $this->assign('page', $page);
+
+        //获取当前月
+        $mouth = intval(date('m',time()));
+        $this->assign('mouth',$mouth);
+        return $this->fetch();
+    }
+
+    //录入统计的详细信息
+    public function lr_count_xiang(){
+        $id = Request::instance()->param('id');
+
+        $type = Request::instance()->param('type');
+        $mouth = date("m",time());
+        $InfoModel = new InfoModel;
+        $info = "";
+        /*使用if来判读是什么类型
+            0 代表所有
+            1 代表个人
+            2 代表单位
+            3 代表行贿行为
+            4 代表行贿犯罪
+        */
+        if ($type == "0") {
+            $info = $InfoModel
+                    ->where('input_name_id','=',$id)
+                    ->order('input_time', 'desc')
+                    ->paginate(3);
+        } elseif ($type == "1") {
+            $info = $InfoModel
+                    ->where('input_name_id','=',$id)
+                    ->where('danwei_geren','=','1')
+                    ->order('input_time', 'desc')
+                    ->paginate(3);
+        } elseif ($type == "2") {
+            $info = $InfoModel
+                    ->where('input_name_id','=',$id)
+                    ->where('danwei_geren','=','0')
+                    ->order('input_time', 'desc')
+                    ->paginate(3);
+        } elseif ($type == "3") {
+            $info = $InfoModel
+                    ->where('input_name_id','=',$id)
+                    ->where('xinhui_fenlei','=','0')
+                    ->order('input_time', 'desc')
+                    ->paginate(3);
+        } elseif ($type == "4") {
+            $info = $InfoModel
+                    ->where('input_name_id','=',$id)
+                    ->where('xinhui_fenlei','=','1')
+                    ->order('input_time', 'desc')
+                    ->paginate(3);
+        }
+
+        // 获取分页显示
+        $page = $info->render();
+        // 模板变量赋值
+        $this->assign('info', $info);
+        $this->assign('page', $page);
+        return $this->fetch();
+    }
+
+    //导出录入excle表
+    public function export_lr(){
+        $info_tjModel = new info_tjModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+
+        $where = array();
+        if ($ad_info['admin_role'] == 0) {  //超管
+            $where = 0;
+        }else{
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','2')->find();
+            $cx_id =  json_decode($cx_info)->id;
+            $where = $cx_id;
+        }
+
+        $list =$info_tjModel->get_luru_excle($where);
+
+        /*
+        $mouth = intval(date('m',time()));
+        $mouth_2 = $mouth+1;
+        */
+        $info = array();
+
+        // exit();
+        foreach ($list as $k=>$v){
+            $info[$k]['Company'] = $v['Company'];
+            $info[$k]['all_num'] = $v['all_num'];
+            $info[$k]['danwei_num'] = $v['danwei_num'];
+            $info[$k]['geren_num'] = $v['geren_num'];
+            $info[$k]['xingwei_num'] = $v['xingwei_num'];
+            $info[$k]['fanzui_num'] = $v['fanzui_num'];
+        }
+        $table_arr = array ('A' => '录入管理员单位', 'B' => '录入数量	', 'C' => '单位数量', 'D' => '个人数量	', 'E' => '行贿行为数量', 'F' => '行贿犯罪数量');
+        $this->up_out( $info, $table_arr );
+    }
+
+    //处置统计
+    public function cz_count(){
+        $chuzi_tongjicountModel = new Chuzi_tongjicountModel;
+        $Chuzi_tongjiModel  = new Chuzi_tongjiModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+        $where = array();
+
+        if($ad_info['admin_role']==0 || $ad_info['admin_role']==4){  //超管
+            $where = 0;
+        }else{
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','3')->find();
+            $cx_id =  $cx_info['id'];
+            $where['cz_id'] = array('eq', $cx_id);
+        }
+        $info = $chuzi_tongjicountModel->get_chuzhi_count($where);
+        // 获取分页显示
+        $page = $info->render();
+        $info = $info->toArray();
+        foreach ($info['data'] as $key => $value) {
+            $id_name = $AdminModel->company_name($value['cz_id']);
+            $id_name = $id_name[0]->toArray()['Company'];
+            $info['data'][$key]['id_name'] = $id_name;
+        }
+        // 模板变量赋值
+        $this->assign('info', $info['data']);
+        $this->assign('page', $page);
+
+        //获取当前月
+        $mouth = intval(date('m',time()));
+        $this->assign('mouth',$mouth);
+        return $this->fetch();
+    }
+
+    //导出处置Excel表
+    public function export_cz(){
+        $chuzi_tongjicountModel = new Chuzi_tongjicountModel;
+        $Chuzi_tongjiModel  = new Chuzi_tongjiModel;
+        $adminId = session('id');
+        //判断是否为超级管理员
+        $AdminModel = new AdminModel();
+        $ad_info = $AdminModel->where('id','=',$adminId)->find();
+        $where = array();
+
+        if($ad_info['admin_role']==0 || $ad_info['admin_role']==4){  //超管
+            $where = 0;
+        }else{
+
+            $Company = session('company');
+            $cx_info = $AdminModel->where('Company','=',$Company)->where('admin_role','=','3')->find();
+            $cx_id =  $cx_info['id'];
+            $where['cz_id'] = array('eq', $cx_id);
+        }
+        $list = $chuzi_tongjicountModel->get_chuzhi_excle($where);
+        // $list = $Chuzi_tongjiModel->get_chuzhi_excle($where);
+        foreach ($list as $key => $value) {
+            $id_name = $AdminModel->company_name($value['cz_id']);
+            $id_name = $id_name[0]->toArray()['Company'];
+            $list[$key]['danwei_name'] = $id_name;
+        }
+        $mouth = intval(date('m',time()));
+        $mouth_2 = $mouth+1;
+        $info = array();
+
+        foreach ($list as $k=>$v){
+            $info[$k]['danwei_name'] = $v['danwei_name'];
+            $info[$k]['chuzhi_jieguo'] = $v['chuzhi_jieguo'];
+            $info[$k]['jieguo_count'] = $v['jieguo_count'];
+        }
+        // dump($info);
+        $table_arr = array ('A' => '处置单位', 'B' => '处置结果', 'C' => '总计');
+        $this->up_out( $info, $table_arr );
+    }
+
+    //处置列表页
+    public function cz_count_list() {
+        $id = Request::instance()->param('id');
+        $InfoModel = new InfoModel;
+        $info = $InfoModel->get_cz_xiang($id);
+        if($info['xinhui_fenlei']==0){
+            $qishi_time = $info['input_time'];
+            $daoqi_time =date("Y-m-d", strtotime("+".$info['chuzhi_qixian']." months", $qishi_time));
+        }else{
+            $qishi_time = strtotime("+".$info['xingqi']." months", $info['input_time']);
+            $daoqi_time =date("Y-m-d", strtotime("+".$info['chuzhi_qixian']." months", $qishi_time));
+        }
+        $this->assign('qishi_time',$qishi_time);
+        $this->assign('daoqi_time',$daoqi_time);
+        $this->assign('info',$info);
+        return $this->fetch();
+
+
+
+    }
+    //处置结果详情
+    public function cz_count_xiang(){
+        $cz_id = Request::instance()->param('cz_id');
+        $chuzhi_jieguo = Request::instance()->param('chuzhi_jieguo');
+
+        $InfoModel = new Chuzi_tongjiModel;
+        $info = $InfoModel->get_cz_list($cz_id,$chuzhi_jieguo);
+        $page = $info->render();
+        $this->assign('info', $info);
+        $this->assign('page', $page);
+        /*
+        $id = Request::instance()->param('id');
+        $InfoModel = new InfoModel;
+        $info = $InfoModel->get_cz_xiang($id);
+        if($info['xinhui_fenlei']==0){
+            $qishi_time = $info['input_time'];
+            $daoqi_time =date("Y-m-d", strtotime("+".$info['chuzhi_qixian']." months", $qishi_time));
+        }else{
+            $qishi_time = strtotime("+".$info['xingqi']." months", $info['input_time']);
+            $daoqi_time =date("Y-m-d", strtotime("+".$info['chuzhi_qixian']." months", $qishi_time));
+        }
+        $this->assign('qishi_time',$qishi_time);
+        $this->assign('daoqi_time',$daoqi_time);
+        $this->assign('info',$info);
+        */
+        return $this->fetch();
+    }
+
+
+    /**
+     * 导出excle通用
+     * Enter description here ...
+     * @param unknown_type $members_info
+     * @param unknown_type $table_arr
+     */
+    protected function up_out($members_info, $table_arr) {
+        Vendor('PHPExcel.PHPExcel');
+        $objPHPExcel = new \PHPExcel();
+        foreach ( $table_arr as $key => $val ) {
+            //设置表格宽度
+            $objPHPExcel->getActiveSheet ()->getColumnDimension ( $key )->setWidth (20);
+            //设置表格第一行标题
+            $objPHPExcel->getActiveSheet ()->setCellValue ( $key . '1', "$val" );
+        }
+        foreach ( $members_info as $key => $val ) {
+            if (is_array ( $val )) {
+                //把这个数组中键和值反转一下
+                $arr2 = array_flip ( $table_arr );
+                //把第一个数组值作为键，第二个数组值作为值，组合新数组
+                $arr3 = array_combine ( $arr2, $val );
+                $key = $key + 2;
+                //循环导出
+                foreach ( $arr3 as $k => $v ) {
+                    $objPHPExcel->getActiveSheet ()->setCellValue ( $k . $key, $v );
+                }
+            }
+        }
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $filename = date ( 'Y-m-j_H_i_s' ) . '.xls';
+        $objWriter->save (__ROOT__.'/upload/phpexcel/'.$filename );
+
+        header ( 'content-Type:application/vnd.ms-excel;charset=GBK' );
+        header ( 'Content-Disposition:attachment;filename="' . $filename . '"' );
+        header ( 'Cache-Control:max-age=0' );
+        $objWriter->save ( 'php://output' );
+    }
+}

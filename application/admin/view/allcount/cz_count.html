@@ -1,0 +1,40 @@
+{include file="/layout/header"}
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+<h1>
+    <span class="action-span"><a href="/index.php/admin/allcount/export_cz">导出Excel表</a></span>
+    <span class="action-span1">处置统计</span>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+
+        <tr>
+            <th >处置单位</th>
+            <th >处置结果</th>
+            <th >统计</th>
+            <th >详细信息</th>
+        </tr>
+        {foreach $info as $key=>$v}
+        <tr class="tron">
+            <td align="center">{$v['id_name']}</td>
+            <td align="center">{$v['chuzhi_jieguo']}</td>
+            <td align="center">{$v['jieguo_count']}</td>
+            <td align="center"><a href="/index.php/admin/allcount/cz_count_xiang/cz_id/{$v['cz_id']}/chuzhi_jieguo/{$v['chuzhi_jieguo']}">查看详情</a></td>
+        </tr>
+        {/foreach}
+        <tr>
+            <td align="right" nowrap="true" colspan="14" height="30">{$page}</td>
+        </tr>
+
+    </table>
+</div>
+{include file="/layout/footer"}
+
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

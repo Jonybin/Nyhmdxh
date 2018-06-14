@@ -1,0 +1,68 @@
+{include file="/layout/header"}
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+<h1>
+    <span class="action-span1">录入统计</span>
+       <!-- <span class="action-span"><a href="/index.php/admin/allcount/export_xji_num">导出Excel表</a></span> -->
+    </form>
+</div>
+</h1>
+<!-- 列表 -->
+<div class="list-div" id="listDiv">
+    <table cellpadding="3" cellspacing="1">
+
+        <tr>
+            <th >录入管理员单位</th>
+            <th >录入总量</th>
+            <th >单位数量</th>
+            <th >个人数量</th>
+            <th >行贿行为数量</th>
+            <th >行贿犯罪数量</th>
+<!--             <th >操作</th> -->
+        </tr>
+        {volist name="info" id="v"}
+            <tr>
+                <td align="center">
+                    {$v['Company']}
+                </td>
+
+                <td align="center">
+                        {$v['all_num']}
+                </td>
+                <td align="center">
+                         {$v['danwei_num']}
+
+                </td>
+                <td align="center">
+                        {$v['geren_num'];}
+                    </a>
+                </td>
+                <td align="center">
+                        {$v['xingwei_num']}
+                    </a>
+                </td>
+                <td align="center">
+                        {$v['fanzui_num']}
+                </td>
+                    <!-- <td align="center"><a href="/index.php/admin/allcount/lr_xji_num_count/dq/{$v['Company']}">查看详情</a></td> -->
+            </tr>
+        {/volist}
+        <tr>
+            <td align="center">总计</td>
+            <td align="center">{$sum_lr}</td>
+            <td align="center">{$sum_danwei}</td>
+            <td align="center">{$sum_geren}</td>
+            <td align="center">{$sum_xw}</td>
+            <td align="center">{$sum_fz}</td>
+        </tr>
+
+    </table>
+</div>
+{include file="/layout/footer"}
+<script>
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+</script>

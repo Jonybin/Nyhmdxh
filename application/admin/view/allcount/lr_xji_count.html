@@ -1,0 +1,184 @@
+{include file="/layout/header"}
+<h1><span class="action-span1">录入记录</span>
+<script type="text/javascript">
+    $("tr.tron").mouseover(function(){
+        $(this).find("td").css("backgroundColor", "#DDEEF2");
+    });
+    $("tr.tron").mouseout(function(){
+        $(this).find("td").css("backgroundColor", "#FFF");
+    });
+    function checkForm(form){
+        var t1 = $('#xinhui_time').val();
+        var t2 = $('#xinhui_time2').val();
+        var my_d = new Date();
+        // alert('8888');
+        
+       //  var y = my_d.getFullYear();
+       // var  m= my_d.getMonth()+1;
+       // var d= my_d.getDate();
+       // var t =y+'-'+m+'-'+d;
+       var d1 = new Date(t1.replace(/\-/g, "\/"));
+       var d2 = new Date(t2.replace(/\-/g, "\/"));
+       if(t2!==''){
+        if(t1==''){
+            alert('请选择开始时间');
+                return false;
+        }
+            if(d1>my_d || d2>my_d){
+                alert('无法超前查询');
+                return false;
+            }
+            if(d1>d2){
+                alert('开始时间不能大于结束时间');
+                return false;
+            }
+       }
+    }
+
+    function showSite(str)
+{
+    var test = window.location.search;
+    var now_i = window.location.href;
+    if(test=="")
+    {
+        var url = now_i+'?tsize='+str;
+    }else{
+        var url = now_i+'&tsize='+str;
+    }
+    
+    
+    alert(url);
+    if (str=="")
+    {
+        // document.getElementById("tsize").innerHTML="10";
+        return;
+    } 
+    if (window.XMLHttpRequest)
+    {
+        // IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+        xmlhttp=new XMLHttpRequest();
+    }
+    else
+    {
+        // IE6, IE5 浏览器执行代码
+        xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xmlhttp.onreadystatechange=function()
+    {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+        }
+    }
+    xmlhttp.open("GET",url,true);
+    xmlhttp.send();
+}
+</script>
+<script type="text/javascript" charset="utf-8" src="/admin/Js/showdate.js"></script>
+    <div class="form-div search_form_div">
+    <form method="get" action="" name="search_form" onsubmit="return checkForm(this)">
+        <input name="xinhui_time" value="<?php if(!empty($sta_t))echo $sta_t;?>" id="xinhui_time" style="margin-left:20%;" placeholder="查询时间" type="text" size="20" onclick="return Calendar('xinhui_time');" />
+        <input type="text" name="xinhui_time2" value="<?php if(!empty($end_t))echo $end_t;?>" id="xinhui_time2" placeholder="结束时间" onclick="return Calendar('xinhui_time2');"/>
+        <select id="diqu" name="diqu">
+                                <option value="">地区</option>
+                                {volist name="diqu" id = "dq"}
+                                        {if $dq.b_name ==$c_diqu}
+                                            <option value="{$dq.b_name}" selected="selected">{$dq.b_name}</option>
+                                        {else}
+                                            <option value="{$dq.b_name}">{$dq.b_name}</option>
+                                        {/if}
+                                {/volist}
+        </select>
+        <select id="danwei" name="danwei">
+                                <option value="">单位</option>
+                                {volist name="danwei" id = 'dw'}
+                                        {if $dw.b_name ==$c_danwei}
+                                            <option value="{$dw.b_name}" selected="selected">{$dw.b_name}</option>
+                                        {else}
+                                            <option value="{$dw.b_name}">{$dw.b_name}</option>
+                                        {/if}
+                                {/volist}
+        </select>
+        <select name="tsize">
+            {if $page_row == 10}
+                <option value="10" selected="selected">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+            {elseif $page_row ==15}
+                <option value="10" >10</option>
+                <option value="15" selected="selected">15</option>
+                <option value="20">20</option>
+            {elseif $page_row ==20}
+                <option value="10" >10</option>
+                <option value="15" >15</option>
+                <option value="20" selected="selected">20</option>
+            {/if}
+                </select>
+                <span>条/页</span>
+        <input type="submit" value=" 检索 " class="button" style="margin-left: 15px"/>
+        
+<span class="action-span"><a href="/index.php/admin/allcount/export_xji_lr">导出Excel表</a></span>
+    </form>
+</div>
+</h1>
+<div class="list-div" id="listDiv">
+    
+    <table cellpadding="3" cellspacing="1">
+
+        <tr>
+            <th >录入单位</th>
+            <th >录入人员姓名</th>
+            <th >行贿人</th>
+            <th >行贿性质</th>
+            <th >行贿金额</th>
+            <th >行贿次数</th>
+            <th >行贿时间</th>
+            <th >录入时间</th>
+            <th >操作</th>
+        </tr>
+        {volist name="info" id="v"}
+            <tr>
+                <td align="center">
+                    {$v['UN']}
+                </td>
+                <td align="center">
+                    
+                        {$v['input_name']}
+                </td>
+                <td align="center">
+                    
+                         {$v['username']}
+                </td>
+                <td align="center">
+                  
+                        {$v['xinhui_fenlei'];}
+                </td>
+                <td align="center">
+                        {$v['xinhui_money']}
+                </td>
+                <td align="center">
+                        {$v['xinhui_cishu']}
+                </td>
+                <td align="center">
+                        {$v['xinhui_time']}
+                </td>
+                <td align="center">
+                        {$v['input_time']}
+                </td>
+                <td align="center">
+                    <a href="/index.php/admin/allcount/lr_xji_xiang/id/{$v['information_id']}">
+                        查看详情
+                    </a>
+                </td>
+            </tr>
+        {/volist}
+
+        <tr>
+            <td align="right" nowrap="true" colspan="10" height="30">{$page}</td>
+            
+        </tr>
+       
+
+    </table>
+</div>
+{include file="/layout/footer"}
